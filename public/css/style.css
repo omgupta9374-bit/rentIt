@@ -1,0 +1,76 @@
+/* body {
+    background-color: pink;
+} */
+
+/* Navbar */
+.navbar {
+    height: 5rem;
+    background-color: white;
+}
+
+.fa-compass {
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: #222222 !important;
+}
+
+
+/* Footer Links */
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover {
+    text-decoration: underline;
+}
+
+/* Footer Socials and Links */
+.f-info-links,
+.f-info-socials {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Social Icons */
+.f-info-socials i {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+/* Footer Container */
+.f-info {
+    text-align: center;
+    min-height: 8rem;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.add-btn {
+    background-color: #fe424d;
+    border: none;
+}
+.show-card {
+    padding: 0;
+}
+
+.show-img {
+    height: 30vh;
+    object-fit: cover;
+}
+
+.btns {
+    display: flex;
+}
+
+.edit-btn {
+    background-color: #fe424d;
+    border: none;
+}
