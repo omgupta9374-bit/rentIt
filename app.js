@@ -1,4 +1,3 @@
-
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,8 +6,9 @@ const path = require("path");
 const methodOverride = require("method-override");
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/expressError");
-const engine = require("ejs-mate");
-const ejsMate = require("ejs-mate");
+const engine = require("ejs-mate");  
+const ejsMate = require("ejs-mate");  
+
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
 // EJS setup
@@ -121,7 +121,6 @@ async function main() {
         console.log("Server is listening on port 8080");
     });
 }
-
 main().catch((err) => {
     console.error("Database connection failed:", err);
 });

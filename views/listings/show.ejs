@@ -8,22 +8,19 @@
 
     <div class="card col-6 offset-3 show-card">
 
-        <% if (listing.image && listing.image.url) { %>
-            <img
-                src="<%= listing.image.url %>"
-                class="card-img-top show-img"
-                alt="<%= listing.title %>"
-            />
-        <% } else if (typeof listing.image === "string" && listing.image) { %>
-            <img
-                src="<%= listing.image %>"
-                class="card-img-top show-img"
-                alt="<%= listing.title %>"
-            />
-        <% } %>
+        <!-- Listing Image -->
+   <% if (listing.image && listing.image.url) { %>
+    <img
+        src="<%= listing.image.url %>"
+        class="card-img-top show-img"
+        alt="<%= listing.title %>"
+    />
+<% } %>
 
+        <!-- Listing Details -->
         <div class="card-body">
             <p class="card-text">
+
                 <b><%= listing.title %></b>
                 <br />
 
@@ -40,25 +37,36 @@
                 <br />
 
                 <%= listing.country || "Country not provided" %>
+
             </p>
         </div>
     </div>
 
     <br />
 
+    <!-- Edit and Delete Buttons -->
     <div class="btns">
-        <a
-            href="/listing/<%= listing._id %>/edit"
-            class="btn btn-dark col-1 offset-2 edit-btn"
-        >Edit</a>
 
+        <!-- Edit Button -->
+        <a
+            href="/listings/<%= listing._id %>/edit"
+            class="btn btn-dark col-1 offset-2 edit-btn"
+        >
+            Edit
+        </a>
+
+        <!-- Delete Button -->
         <form
             method="POST"
-            action="/listing/<%= listing._id %>?_method=DELETE"
+            action="/listings/<%= listing._id %>?_method=DELETE"
         >
-            <button class="btn btn-dark offset-4" type="submit">
+            <button
+                class="btn btn-dark offset-4"
+                type="submit"
+            >
                 Delete
             </button>
         </form>
+
     </div>
 </div>
