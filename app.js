@@ -1,19 +1,22 @@
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
+const Review = require("./models/review.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/expressError");
-const engine = require("ejs-mate");  
-const ejsMate = require("ejs-mate");  
+const ejsMate = require("ejs-mate");
+
+const { validateListing } = require("./middleware/listing");
+const { validateReview } = require("./middleware/review");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
 // EJS setup
 app.engine("ejs", ejsMate);
-app.engine("ejs", engine);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -40,7 +43,7 @@ app.get("/listings/new", (req, res) => {
 });
 
 // Create Route
-app.post("/listings", wrapAsync(async (req, res) => {
+app.post("/listings", validateListing, wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -49,6 +52,7 @@ app.post("/listings", wrapAsync(async (req, res) => {
 // Edit Route
 app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
     const { id } = req.params;
+
     const listing = await Listing.findById(id);
 
     if (!listing) {
@@ -59,7 +63,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 }));
 
 // Update Route
-app.put("/listings/:id", wrapAsync(async (req, res) => {
+app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
     const { id } = req.params;
 
     const listing = await Listing.findByIdAndUpdate(
@@ -75,14 +79,18 @@ app.put("/listings/:id", wrapAsync(async (req, res) => {
     res.redirect(`/listings/${id}`);
 }));
 
-// Show Route
+// Show Route - Populate Reviews
 app.get("/listings/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const listing = await Listing.findById(id);
+
+    const listing = await Listing.findById(id)
+        .populate("reviews");
 
     if (!listing) {
         throw new ExpressError(404, "Listing not found");
     }
+
+    
 
     res.render("listings/show.ejs", { listing });
 }));
@@ -100,18 +108,46 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
     res.redirect("/listings");
 }));
 
+// Create Review Route
+app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
+    ///console.log("POST REVIEW ROUTE WORKING");
+
+    const listing = await Listing.findById(req.params.id);
+
+    if (!listing) {
+        throw new ExpressError(404, "Listing not found");
+    }
+
+    const newReview = new Review(req.body.review);
+
+    await newReview.save();
+
+    listing.reviews.push(newReview._id);
+
+    await listing.save();
+
+   // console.log("REVIEW SAVED:", newReview);
+
+    res.redirect(`/listings/${listing._id}`);
+}));
+
+// 404 Error Handler
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page not found"));
 });
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = "Something went wrong!" } = err;
+    const {
+        statusCode = 500,
+        message = "Something went wrong!"
+    } = err;
 
     res.status(statusCode).render("listings/error.ejs", {
-    err: { message }
+        err: { message }
+    });
 });
-});
+
 // Connect to DB, then start server
 async function main() {
     await mongoose.connect(MONGO_URL);
@@ -121,6 +157,7 @@ async function main() {
         console.log("Server is listening on port 8080");
     });
 }
+
 main().catch((err) => {
     console.error("Database connection failed:", err);
 });

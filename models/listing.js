@@ -20,6 +20,12 @@ const listingSchema = new Schema({
             default: "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b"
         }
     },
+    reviews: [
+    {
+        type: Schema.Types.ObjectId,
+        ref: "Review"
+    }
+],
 
     price: Number,
     location: String,
