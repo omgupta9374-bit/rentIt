@@ -1,21 +1,38 @@
-
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Listing = require("./models/listing.js");
-const Review = require("./models/review.js");
 const path = require("path");
 const methodOverride = require("method-override");
-const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/expressError");
 const ejsMate = require("ejs-mate");
+const session = require("express-session");
+const flash = require("connect-flash");
 
-const { validateListing } = require("./middleware/listing");
-const { validateReview } = require("./middleware/review");
+const sessionOption ={
+    secret : "secretCode",
+    resave : false ,
+    saveUninitialized : true,
+    cookie :{
+        expires : Date.now() + 1000*60*60*24*3,
+        maxAge : 1000*60*60*24*3,
+        httpOnly : true
+    }
+};
+app.use(session(sessionOption));
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
+// Import Routes
+const listingRoutes = require("./routes/listing.js");
+const reviewRoutes = require("./routes/review.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
-// EJS setup
+// EJS Setup
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -31,105 +48,11 @@ app.get("/", (req, res) => {
     res.send("Hi, I am root");
 });
 
-// Index Route
-app.get("/listings", wrapAsync(async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
-}));
+// Listing Routes
+app.use("/listings", listingRoutes);
 
-// New Route
-app.get("/listings/new", (req, res) => {
-    res.render("listings/new.ejs");
-});
-
-// Create Route
-app.post("/listings", validateListing, wrapAsync(async (req, res) => {
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings");
-}));
-
-// Edit Route
-app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    const listing = await Listing.findById(id);
-
-    if (!listing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-
-    res.render("listings/edit.ejs", { listing });
-}));
-
-// Update Route
-app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    const listing = await Listing.findByIdAndUpdate(
-        id,
-        { ...req.body.listing },
-        { runValidators: true, new: true }
-    );
-
-    if (!listing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-
-    res.redirect(`/listings/${id}`);
-}));
-
-// Show Route - Populate Reviews
-app.get("/listings/:id", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    const listing = await Listing.findById(id)
-        .populate("reviews");
-
-    if (!listing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-
-    
-
-    res.render("listings/show.ejs", { listing });
-}));
-
-// Delete Route
-app.delete("/listings/:id", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-
-    const deletedListing = await Listing.findByIdAndDelete(id);
-
-    if (!deletedListing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-
-    res.redirect("/listings");
-}));
-
-// Create Review Route
-app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
-    ///console.log("POST REVIEW ROUTE WORKING");
-
-    const listing = await Listing.findById(req.params.id);
-
-    if (!listing) {
-        throw new ExpressError(404, "Listing not found");
-    }
-
-    const newReview = new Review(req.body.review);
-
-    await newReview.save();
-
-    listing.reviews.push(newReview._id);
-
-    await listing.save();
-
-   // console.log("REVIEW SAVED:", newReview);
-
-    res.redirect(`/listings/${listing._id}`);
-}));
+// Review Routes
+app.use("/listings", reviewRoutes);
 
 // 404 Error Handler
 app.use((req, res, next) => {
@@ -148,7 +71,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Connect to DB, then start server
+// Database Connection
 async function main() {
     await mongoose.connect(MONGO_URL);
     console.log("Connected to DB");
