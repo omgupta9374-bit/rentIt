@@ -20,16 +20,20 @@ const listingSchema = new Schema({
             default: "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b"
         }
     },
-    reviews: [
-    {
+
+    reviews: [{
         type: Schema.Types.ObjectId,
         ref: "Review"
-    }
-],
+    }],
 
     price: Number,
     location: String,
-    country: String
+    country: String,
+
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }
 });
 
 const Listing = mongoose.model("Listing", listingSchema);

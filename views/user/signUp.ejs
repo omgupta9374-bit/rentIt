@@ -1,0 +1,124 @@
+
+<% layout("/layouts/boilerplate") %>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <h2 class="text-center mb-2">Create Account</h2>
+                <p class="text-center text-muted mb-4">
+                    Join RentIt and discover your next stay.
+                </p>
+
+                <form action="/signup" method="POST"
+                      class="needs-validation" novalidate>
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="username"
+                            name="username"
+                            placeholder="Enter username"
+                            minlength="3"
+                            required
+                        >
+
+                        <div class="invalid-feedback">
+                            Username must contain at least 3 characters.
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            placeholder="Create password"
+                            minlength="8"
+                            required
+                        >
+
+                        <div class="invalid-feedback">
+                            Password must contain at least 8 characters.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100">
+                        Sign Up
+                    </button>
+
+                </form>
+
+                <hr>
+
+                <p class="text-center mb-0">
+                    Already have an account?
+                    <a href="/login" class="text-decoration-none">
+                        Login
+                    </a>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    const forms = document.querySelectorAll('.needs-validation');
+
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    });
+})();
+</script>
+
+
+<!-- Your form sends these three fields to your backend:
+req.body.username
+req.body.email
+req.body.password -->

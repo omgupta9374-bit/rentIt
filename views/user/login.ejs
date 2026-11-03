@@ -1,0 +1,124 @@
+
+<% layout("/layouts/boilerplate") %>
+
+<div class="login-wrapper">
+    <div class="login-container">
+
+        <!-- Left Side -->
+        <div class="login-left">
+            <div class="brand">
+                <i class="fa-solid fa-house"></i>
+                RentIt
+            </div>
+
+            <div class="welcome-content">
+                <span class="welcome-tag">WELCOME BACK</span>
+
+                <h1>Find your next
+                    <span>perfect stay.</span>
+                </h1>
+
+                <p>
+                    Discover amazing places, comfortable stays,
+                    and unforgettable experiences with RentIt.
+                </p>
+
+                <div class="feature">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Find stays that feel like home
+                </div>
+
+                <div class="feature">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Easy and secure booking experience
+                </div>
+            </div>
+
+            <div class="left-footer">
+                Your journey starts here.
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="login-right">
+
+            <div class="login-heading">
+                <h2>Welcome Back!</h2>
+                <p>Enter your details to access your account.</p>
+            </div>
+
+            <form action="/login" method="POST">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-user"></i>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <i class="fa-regular fa-eye toggle-password"
+                           id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <div class="login-options">
+                    <label class="remember">
+                        <input type="checkbox" name="remember">
+                        Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login to your account
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+            </form>
+
+            <div class="signup-text">
+                Don't have an account?
+                <a href="/signup">Create an account</a>
+            </div>
+
+            <div class="login-bottom">
+                <span>© 2026 RentIt. All rights reserved.</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+        const isPassword = passwordInput.type === "password";
+
+        passwordInput.type = isPassword ? "text" : "password";
+
+        togglePassword.classList.toggle("fa-eye");
+        togglePassword.classList.toggle("fa-eye-slash");
+    });
+</script>

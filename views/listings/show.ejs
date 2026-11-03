@@ -16,8 +16,16 @@
             <img
                 src="<%= listing.image.url %>"
                 class="card-img-top show-img"
-                alt="<%= listing.title %>"
-            />
+                alt="<b><%= listing.title %></b>
+<br />
+
+<small class="text-muted">
+    Listed by:
+    <strong>
+        <%= listing.owner ? listing.owner.username : "Unknown Owner" %>
+    </strong>
+</small>
+<br />
         <% } %>
 
         <!-- Listing Details -->
@@ -46,32 +54,33 @@
     </div>
 
     <!-- Edit and Delete Buttons -->
+<% if (currUser && listing.owner &&
+       listing.owner._id.equals(currUser._id)) { %>
+
     <div class="btns mt-3">
 
-        <!-- Edit -->
+        <!-- Edit Button -->
         <a
             href="/listings/<%= listing._id %>/edit"
-            class="btn btn-dark col-1 offset-2 edit-btn"
+            class="btn btn-dark edit-btn"
         >
             Edit
         </a>
 
-        <!-- Delete -->
+        <!-- Delete Button -->
         <form
             method="POST"
             action="/listings/<%= listing._id %>?_method=DELETE"
             class="d-inline"
         >
-            <button
-                class="btn btn-dark offset-4"
-                type="submit"
-            >
+            <button class="btn btn-danger" type="submit">
                 Delete
             </button>
         </form>
 
     </div>
 
+<% } %>
     <!-- Review Form -->
     <div class="col-8 offset-2 mt-5">
 

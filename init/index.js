@@ -11,7 +11,7 @@ async function main() {
 
     await Listing.deleteMany({});
     console.log("Old listings deleted");
-
+    initData.data = initData.data.map((obj) => ({...obj,owner :'6ae9bf6bf3f5b8fbd56c9c80'}));
     await Listing.insertMany(initData.data);
     console.log("Sample listings inserted successfully");
 
